@@ -2,6 +2,11 @@
 import { useEffect, useState } from 'react'
 import Button from 'react-bootstrap/Button';
 import { CSVLink } from "react-csv";
+import Modal from 'react-bootstrap/Modal'
+import Form from 'react-bootstrap/Form'
+import DatePicker from "react-datepicker";
+
+import "react-datepicker/dist/react-datepicker.css";
 
 // Components
 import NavBar from '../../components/NavBar'
@@ -42,6 +47,14 @@ const Patients = () => {
     const [disposition, setDisposition] = useState('list')
     const [pageSize, setPageSize] = useState(5)
     const [currentPage, setCurrentPage] = useState(0)
+    const [createPatient, setCreatePatient] = useState(false)
+    const [name, setName] = useState('')
+    const [surname, setSurname] = useState('')
+    const [birthday, setBirthday] = useState(new Date())
+    const [gender, setGender] = useState('')
+    const [clinic, setClinic] = useState('')
+    const [cut, setCut] = useState('')
+    const [secretRetainer, setSecretRetainer] = useState('')
 
     let patientsIds = []
 
@@ -82,12 +95,26 @@ const Patients = () => {
     }
 
     const handleAddPatient = () => {
-        // TODO Add pacient
-        console.log("ADD PATIENT")
+        setCreatePatient(true)
     }
 
     const handleDownloadCSV = () => {
         console.log("DOWNLOAD CSV")
+    }
+
+    const handleClearForm = () => {
+        console.log("Cleaning Form")
+        setName('')
+        setSurname('')
+        setBirthday(new Date(Date.now()))
+        setGender('')
+        setClinic('')
+        setCut('')
+        setSecretRetainer('')
+    }
+
+    const handleCreatePatient = () => {
+        
     }
 
     return (
@@ -113,21 +140,136 @@ const Patients = () => {
                     <ButtonsContainer>
                         <Button variant="outline-primary" onClick={() => handleAddPatient()}><ButtonText>+ Nuevo Paciente</ButtonText></Button>
                         <CSVLink data={patients}>
-                            <Button variant="outline-primary" onClick={() => handleDownloadCSV()}><ButtonText><ButtonIcon src={documentIcon}/> Download CSV</ButtonText></Button>
+                            <Button variant="outline-primary" onClick={() => handleDownloadCSV()}><ButtonText><ButtonIcon src={documentIcon} /> Download CSV</ButtonText></Button>
                         </CSVLink>
                     </ButtonsContainer>
                     <DispositionContainer>
-                        <Icon src={listIcon} margin onClick={() => setDisposition('list')}/>
-                        <Icon src={mosaicIcon} margin onClick={() => setDisposition('mosaic')}/>
+                        <Icon src={listIcon} margin onClick={() => setDisposition('list')} />
+                        <Icon src={mosaicIcon} margin onClick={() => setDisposition('mosaic')} />
                         <IconNumber onClick={() => setPageSize(5)}>5</IconNumber>
                         <IconNumber onClick={() => setPageSize(10)}>10</IconNumber>
                         <IconNumber onClick={() => setPageSize(15)}>15</IconNumber>
                     </DispositionContainer>
                     {
                         disposition === 'list'
-                        ? <ListDisplay patients={paginatedPatients}/>
-                        : <MosaicDisplay patients={paginatedPatients}/>
+                            ? <ListDisplay patients={paginatedPatients} />
+                            : <MosaicDisplay patients={paginatedPatients} />
                     }
+                    <Modal show={createPatient} onHide={() => setCreatePatient(false)}>
+                        <Modal.Header>
+                            <Modal.Title>Nuevo Paciente</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            <Form>
+                                <Form.Group className="mb-3" controlId="name">
+                                    <Form.Label>Nombre</Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Nombre"
+                                        onChange={(e)=> setName(e.target.value)}
+                                        value={name}
+                                    />
+                                </Form.Group>
+
+                                <Form.Group className="mb-3" controlId="surnam">
+                                    <Form.Label>Apellidos</Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        onChange={(e) => setSurname(e.target.value)}
+                                        placeholder="Apellidos"
+                                        value={surname}    
+                                    />
+                                </Form.Group>
+
+                                <Form.Group className="mb-3" controlId="birthdate">
+                                    <Form.Label>Fecha de nacimiento{ } </Form.Label>
+                                    <br></br>
+                                    <DatePicker
+                                        showYearDropdown="true"
+                                        scrollableYearDropdown="true"
+                                        selected={birthday}
+                                        startDate={new Date('1900-01-01T00:00:00')}
+                                        onChange={(date) => setBirthday(date)} />
+                                </Form.Group>
+                                <Form.Group>
+                                    <Form.Label>Sexo</Form.Label>
+                                    <br></br>
+                                    <select 
+                                        value={gender}
+                                        onChange={(e) => setGender(e.target.value)}
+                                    >
+                                        <option selectedValue={gender === 'masculino'} value="masculino">masculino</option>
+                                        <option selectedValue={gender === 'femenino'} value="femenino">femenino</option>
+                                    </select>
+
+                                </Form.Group>
+                                <br></br>
+                                <Form.Group className="mb-3" controlId="center">
+                                    <Form.Label>Clínica</Form.Label>
+                                    <Form.Control
+                                        type="text" 
+                                        placeholder="Clínica" 
+                                        value={clinic} 
+                                        onChange={(e) => {setClinic(e.target.value)}}
+                                    />
+                                </Form.Group>
+
+                                <Form.Group>
+                                    <Form.Label>Recortar Alineadores:</Form.Label>
+                                    <br></br>
+                                    <Form.Check
+                                        inline
+                                        label="Recortar dejando 1-3 mm de encía"
+                                        name="alineadores"
+                                        type="radio"
+                                        onChange={()=> setCut('partial')}
+                                        checked={cut === 'partial'}
+                                    />
+                                    <Form.Check
+                                        inline
+                                        label="Recortar a nivel de los cuellos"
+                                        name="alineadores"
+                                        type="radio"
+                                        onChange={()=> setCut('total')}
+                                        checked={cut === 'total'}
+                                    />
+                                </Form.Group>
+
+                                <Form.Group>
+                                    <Form.Label>¿SecretRetainer?
+                                    </Form.Label>
+                                    <br></br>
+                                    <Form.Check
+                                        inline
+                                        label="Sí"
+                                        name="secretRetainer"
+                                        type="radio"
+                                        onChange={()=> setSecretRetainer(true)}
+                                        checked={secretRetainer}
+                                    />
+                                    <Form.Check
+                                        inline
+                                        label="No"
+                                        name="secretRetainer"
+                                        type="radio"
+                                        onChange={()=> setSecretRetainer(false)}
+                                        checked={secretRetainer === false}
+                                    />
+                                </Form.Group>
+                            </Form>
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button variant="success" type="submit" onClick={() => handleCreatePatient()}>
+                                Guardar
+                            </Button>
+                            <Button variant="secondary" onClick={() => setCreatePatient(false)}>
+                                Cancelar
+                            </Button>
+                            <Button variant="danger" onClick={() => handleClearForm()}>
+                                Limpiar
+                            </Button>
+                        </Modal.Footer>
+                    </Modal>
                 </Body>
             </MainContainer>
         </div>
