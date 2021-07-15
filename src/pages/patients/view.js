@@ -1,6 +1,7 @@
 // Libraries
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import Button from 'react-bootstrap/Button';
+import Pagination from 'react-bootstrap/Pagination';
 import { CSVLink } from "react-csv";
 import Modal from 'react-bootstrap/Modal'
 import Form from 'react-bootstrap/Form'
@@ -31,6 +32,7 @@ import {
     IconContainer,
     IconNumber,
     MainContainer,
+    PaginationContainer,
     Title
 } from './styles'
 
@@ -113,8 +115,19 @@ const Patients = () => {
         setSecretRetainer('')
     }
 
-    const handleCreatePatient = () => {
-        
+    const handleCreatePatient = () => {
+
+    }
+
+    console.log(patientsIds.length / pageSize)
+
+    let items = [];
+    for (let number = 0; number <= patientsIds.length / pageSize; number++) {
+        items.push(
+            <Pagination.Item key={number} active={number === currentPage} onClick={() => setCurrentPage(number)} activeLabel="">
+                {number}
+            </Pagination.Item>,
+        );
     }
 
     return (
@@ -166,7 +179,7 @@ const Patients = () => {
                                     <Form.Control
                                         type="text"
                                         placeholder="Nombre"
-                                        onChange={(e)=> setName(e.target.value)}
+                                        onChange={(e) => setName(e.target.value)}
                                         value={name}
                                     />
                                 </Form.Group>
@@ -177,7 +190,7 @@ const Patients = () => {
                                         type="text"
                                         onChange={(e) => setSurname(e.target.value)}
                                         placeholder="Apellidos"
-                                        value={surname}    
+                                        value={surname}
                                     />
                                 </Form.Group>
 
@@ -194,7 +207,7 @@ const Patients = () => {
                                 <Form.Group>
                                     <Form.Label>Sexo</Form.Label>
                                     <br></br>
-                                    <select 
+                                    <select
                                         value={gender}
                                         onChange={(e) => setGender(e.target.value)}
                                     >
@@ -207,10 +220,10 @@ const Patients = () => {
                                 <Form.Group className="mb-3" controlId="center">
                                     <Form.Label>Clínica</Form.Label>
                                     <Form.Control
-                                        type="text" 
-                                        placeholder="Clínica" 
-                                        value={clinic} 
-                                        onChange={(e) => {setClinic(e.target.value)}}
+                                        type="text"
+                                        placeholder="Clínica"
+                                        value={clinic}
+                                        onChange={(e) => { setClinic(e.target.value) }}
                                     />
                                 </Form.Group>
 
@@ -222,7 +235,7 @@ const Patients = () => {
                                         label="Recortar dejando 1-3 mm de encía"
                                         name="alineadores"
                                         type="radio"
-                                        onChange={()=> setCut('partial')}
+                                        onChange={() => setCut('partial')}
                                         checked={cut === 'partial'}
                                     />
                                     <Form.Check
@@ -230,7 +243,7 @@ const Patients = () => {
                                         label="Recortar a nivel de los cuellos"
                                         name="alineadores"
                                         type="radio"
-                                        onChange={()=> setCut('total')}
+                                        onChange={() => setCut('total')}
                                         checked={cut === 'total'}
                                     />
                                 </Form.Group>
@@ -244,7 +257,7 @@ const Patients = () => {
                                         label="Sí"
                                         name="secretRetainer"
                                         type="radio"
-                                        onChange={()=> setSecretRetainer(true)}
+                                        onChange={() => setSecretRetainer(true)}
                                         checked={secretRetainer}
                                     />
                                     <Form.Check
@@ -252,7 +265,7 @@ const Patients = () => {
                                         label="No"
                                         name="secretRetainer"
                                         type="radio"
-                                        onChange={()=> setSecretRetainer(false)}
+                                        onChange={() => setSecretRetainer(false)}
                                         checked={secretRetainer === false}
                                     />
                                 </Form.Group>
@@ -270,6 +283,9 @@ const Patients = () => {
                             </Button>
                         </Modal.Footer>
                     </Modal>
+                    <PaginationContainer>
+                        <Pagination>{items}</Pagination>
+                    </PaginationContainer>
                 </Body>
             </MainContainer>
         </div>

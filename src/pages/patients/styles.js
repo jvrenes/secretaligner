@@ -88,6 +88,13 @@ export const MainContainer = styled.div`
     flex-direction: row;
 `
 
+export const PaginationContainer = styled.div`
+    width: 100%;
+    min-width: 800px;
+    display: flex;
+    justify-content: center;
+`
+
 export const Title = styled.p`
     font-family: 'Roboto', sans-serif;
     font-weight: 600;
