@@ -15,13 +15,18 @@ import {
 
 import avatarIcon from '../../assets/icons/userAvatar.png'
 
-const ListDisplay = ({ patients }) => {
-    console.log(patients)
+const ListDisplay = ({ patients, setCurrentPatient, setShowPatient }) => {
     return (
         <Container>
             {
                 patients.map((patient, index) =>
-                    <UserCard key={index}>
+                    <UserCard
+                        key={index}
+                        onClick={() => {
+                            setShowPatient(true)
+                            setCurrentPatient(patient)
+                        }}
+                    >
                         <Status status={patient.ficha_dental.estado}>
                             <StatusText>{patient.ficha_dental.estado.toUpperCase()}</StatusText>
                         </Status>

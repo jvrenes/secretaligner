@@ -19,7 +19,7 @@ import {
 import avatarIcon from '../../assets/icons/userAvatar.png'
 import calendarIcon from '../../assets/icons/calendar.png'
 
-const ListDisplay = ({ patients }) => {
+const ListDisplay = ({ patients, setCurrentPatient, setShowPatient }) => {
     return (
         <Container>
             <Header>
@@ -33,7 +33,13 @@ const ListDisplay = ({ patients }) => {
                 {
                     patients.map((patient, index) => {
                         return (
-                            <UserCard key={index}>
+                            <UserCard
+                                onClick={() => {
+                                    setShowPatient(true)
+                                    setCurrentPatient(patient)
+                                }}
+                                key={index}
+                            >
                                 <UserAvatar src={avatarIcon} />
                                 <NameContainer>
                                     <UserName>{patient.datos_paciente.nombre} {patient.datos_paciente.apellidos}</UserName>

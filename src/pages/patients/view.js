@@ -1,20 +1,21 @@
 // Libraries
 import { useState } from 'react'
-import Button from 'react-bootstrap/Button';
-import Pagination from 'react-bootstrap/Pagination';
-import { CSVLink } from "react-csv";
+import Button from 'react-bootstrap/Button'
+import Pagination from 'react-bootstrap/Pagination'
+import { CSVLink } from "react-csv"
 import Modal from 'react-bootstrap/Modal'
 import Form from 'react-bootstrap/Form'
-import DatePicker from "react-datepicker";
+import DatePicker from "react-datepicker"
 
-import "react-datepicker/dist/react-datepicker.css";
+import "react-datepicker/dist/react-datepicker.css"
 
 // Components
 import NavBar from '../../components/NavBar'
 import SideBar from '../../components/SideBar'
 import Searcher from '../../components/Searcher'
-import MosaicDisplay from '../../components/MosaicDisplay';
-import ListDisplay from '../../components/ListDisplay';
+import MosaicDisplay from '../../components/MosaicDisplay'
+import ListDisplay from '../../components/ListDisplay'
+import PatientDetails from '../../components/PatientDetails'
 
 // Styles
 import {
@@ -57,6 +58,8 @@ const Patients = () => {
     const [clinic, setClinic] = useState('')
     const [cut, setCut] = useState('')
     const [secretRetainer, setSecretRetainer] = useState('')
+    const [currentPatient, setCurrentPatient] = useState('')
+    const [showPatient, setShowPatient] = useState('')
 
     let patientsIds = []
 
@@ -92,20 +95,7 @@ const Patients = () => {
 
     const paginatedPatients = paginate()
 
-    const handleSearch = (e) => {
-        setSearchTerm(e.target.value)
-    }
-
-    const handleAddPatient = () => {
-        setCreatePatient(true)
-    }
-
-    const handleDownloadCSV = () => {
-        console.log("DOWNLOAD CSV")
-    }
-
     const handleClearForm = () => {
-        console.log("Cleaning Form")
         setName('')
         setSurname('')
         setBirthday(new Date(Date.now()))
@@ -115,12 +105,7 @@ const Patients = () => {
         setSecretRetainer('')
     }
 
-    const handleCreatePatient = () => {
-
-    }
-
-    console.log(patientsIds.length / pageSize)
-
+    // PAGINATOR ITEMS
     let items = [];
     for (let number = 0; number <= patientsIds.length / pageSize; number++) {
         items.push(
@@ -147,13 +132,13 @@ const Patients = () => {
                             <HeaderSubtitle>Visualización de Pacientes</HeaderSubtitle>
                         </HeaderInfo>
                         <HeaderSearcher>
-                            <Searcher onChange={(e) => handleSearch(e)} />
+                            <Searcher onChange={(e) => setSearchTerm(e.target.value)} />
                         </HeaderSearcher>
                     </Header>
                     <ButtonsContainer>
-                        <Button variant="outline-primary" onClick={() => handleAddPatient()}><ButtonText>+ Nuevo Paciente</ButtonText></Button>
+                        <Button variant="outline-primary" onClick={() => setCreatePatient(true)}><ButtonText>+ Nuevo Paciente</ButtonText></Button>
                         <CSVLink data={patients}>
-                            <Button variant="outline-primary" onClick={() => handleDownloadCSV()}><ButtonText><ButtonIcon src={documentIcon} /> Download CSV</ButtonText></Button>
+                            <Button variant="outline-primary"><ButtonText><ButtonIcon src={documentIcon} /> Download CSV</ButtonText></Button>
                         </CSVLink>
                     </ButtonsContainer>
                     <DispositionContainer>
@@ -165,8 +150,8 @@ const Patients = () => {
                     </DispositionContainer>
                     {
                         disposition === 'list'
-                            ? <ListDisplay patients={paginatedPatients} />
-                            : <MosaicDisplay patients={paginatedPatients} />
+                            ? <ListDisplay setShowPatient={setShowPatient} setCurrentPatient={setCurrentPatient} patients={paginatedPatients} />
+                            : <MosaicDisplay setShowPatient={setShowPatient} setCurrentPatient={setCurrentPatient} patients={paginatedPatients} />
                     }
                     <Modal show={createPatient} onHide={() => setCreatePatient(false)}>
                         <Modal.Header>
@@ -272,7 +257,7 @@ const Patients = () => {
                             </Form>
                         </Modal.Body>
                         <Modal.Footer>
-                            <Button variant="success" type="submit" onClick={() => handleCreatePatient()}>
+                            <Button variant="success" type="submit" onClick={() => setCreatePatient(false)}>
                                 Guardar
                             </Button>
                             <Button variant="secondary" onClick={() => setCreatePatient(false)}>
@@ -282,6 +267,15 @@ const Patients = () => {
                                 Limpiar
                             </Button>
                         </Modal.Footer>
+                    </Modal>
+
+                    <Modal
+                        size="lg"
+                        className="treatment-modal"
+                        show={showPatient}
+                        onHide={() => setShowPatient(false)}
+                    >
+                        <PatientDetails patient={currentPatient} />
                     </Modal>
                     <PaginationContainer>
                         <Pagination>{items}</Pagination>

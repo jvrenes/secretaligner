@@ -18,7 +18,6 @@ export const Container = styled.div`
     flex-wrap: wrap;
     justify-content: flex-start;
     padding: 20px;
-    border: 1px solid green;
     &:after {
         content: "";
         flex: auto;
