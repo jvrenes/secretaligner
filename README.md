@@ -8,7 +8,7 @@
 
 ### Tarea 2:
 
-8 horas
+6 horas
 
 ### Tara 3: 
 
